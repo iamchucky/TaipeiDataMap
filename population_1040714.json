@@ -1,0 +1,107 @@
+{
+  "lastmodify": "2015/07/14 17:00",
+  "license": "CC0",
+  "source": "台北市資訊局",
+  "data":  [
+    {
+        "District": "士林區",
+        "Name": "里數",
+        "Property": " 51"
+    },
+    {
+        "District": "士林區",
+        "Name": "人口數",
+        "Property": " 290,711 "
+    },
+    {
+        "District": "士林區",
+        "Name": "公民數",
+        "Property": "236,187"
+    },
+    {
+        "District": "士林區",
+        "Name": "依賴人口 0-4歲人口",
+        "Property": " 15,046 "
+    },
+    {
+        "District": "士林區",
+        "Name": "依賴人口 5-14歲人口",
+        "Property": " 23,628 "
+    },
+    {
+        "District": "士林區",
+        "Name": "依賴人口 65歲以上人口",
+        "Property": "41,644"
+    },
+    {
+        "District": "士林區",
+        "Name": "15-64歲",
+        "Property": "210,082"
+    },
+    {
+        "District": "士林區",
+        "Name": "扶養比",
+        "Property": "38.23%"
+    },
+    {
+        "District": "士林區",
+        "Name": "原住民人口數 合計",
+        "Property": " 1,480 "
+    },
+    {
+        "District": "士林區",
+        "Name": "原住民人口數 平地",
+        "Property": " 835"
+    },
+    {
+        "District": "士林區",
+        "Name": "原住民人口數 山地",
+        "Property": " 645"
+    },
+    {
+        "District": "士林區",
+        "Name": "新移民(大陸籍)人口 男",
+        "Property": " 151"
+    },
+    {
+        "District": "士林區",
+        "Name": "新移民(大陸籍)人口 女",
+        "Property": " 2,485 "
+    },
+    {
+        "District": "士林區",
+        "Name": "新移民(大陸籍)人口 合計",
+        "Property": " 2,636 "
+    },
+    {
+        "District": "士林區",
+        "Name": "新移民(東南亞前5國)人口 男",
+        "Property": " 8"
+    },
+    {
+        "District": "士林區",
+        "Name": "新移民(東南亞前5國)人口 女",
+        "Property": " 149"
+    },
+    {
+        "District": "士林區",
+        "Name": "新移民(東南亞前5國)人口 合計",
+        "Property": " 157"
+    },
+    {
+        "District": "士林區",
+        "Name": "新移民(其他國籍)人口 男",
+        "Property": "145"
+    },
+    {
+        "District": "士林區",
+        "Name": "新移民(其他國籍)人口 女",
+        "Property": "90"
+    },
+    {
+        "District": "士林區",
+        "Name": "新移民(其他國籍)人口 合計",
+        "Property": "235"
+    }
+]
+ }
