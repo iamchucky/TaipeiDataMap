@@ -52,7 +52,7 @@
 		</PolyStyle>
 	</Style>
 	<Placemark>
-		<name>臺北市文山區</name>
+		<name>文山區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -64,7 +64,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark>
-		<name>臺北市萬華區</name>
+		<name>萬華區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -76,7 +76,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark>
-		<name>臺北市南港區</name>
+		<name>南港區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -88,7 +88,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark>
-		<name>臺北市大安區</name>
+		<name>大安區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -100,7 +100,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark>
-		<name>臺北市內湖區</name>
+		<name>內湖區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -112,7 +112,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark>
-		<name>臺北市士林區</name>
+		<name>士林區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -124,7 +124,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark>
-		<name>臺北市松山區</name>
+		<name>松山區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -136,7 +136,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark>
-		<name>臺北市信義區</name>
+		<name>信義區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -148,7 +148,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark>
-		<name>臺北市中山區</name>
+		<name>中山區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -160,7 +160,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark>
-		<name>臺北市中正區</name>
+		<name>中正區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -172,7 +172,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark>
-		<name>臺北市大同區</name>
+		<name>大同區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -184,7 +184,7 @@
 		</Polygon>
 	</Placemark>
 	<Placemark>
-		<name>臺北市北投區</name>
+		<name>北投區</name>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>

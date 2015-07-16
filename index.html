@@ -2,19 +2,41 @@
 <html>
   <head>
     <title>Taipei</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <link rel="stylesheet" href="app.css"></link>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-    <script src="togeojson.js"></script>
 
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/materialize.min.js"></script>
+    <script src="togeojson.js"></script>
     <script src="app.js"></script>
   </head>
   <body>
-	<div id="pane">
-		<div id="district-text"></div>
-	</div>
-    <div id="map-canvas"></div>
-	
+    <header>
+      <div class="navbar-fixed">
+        <nav>
+          <div class="nav-wrapper indigo">
+            <a href data-activates="slide-out" class="button-collapse menu"><i class="material-icons">menu</i></a>
+            <ul id="slide-out" class="side-nav fixed">
+              <div>
+                <li class="indigo z-depth-1">
+                  <a class="dropdown-button waves-effect waves-light">
+                    <span class="pageTitle"></span>
+                  </a>
+                </li>
+              </div>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div id="map-canvas"></div>
+    </main>
   </body>
 </html>
