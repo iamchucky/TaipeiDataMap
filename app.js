@@ -1,6 +1,7 @@
 $(document).ready(function() {
 
 var dataset = null;
+var selectedDataset = '';
 function loadData() {
   var xmlhttp;
   if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -10,17 +11,55 @@ function loadData() {
   }
   xmlhttp.onreadystatechange = function() {
     if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-      dataset = JSON.parse(xmlhttp.responseText);
+      var data = JSON.parse(xmlhttp.responseText);
+      if (data.data) {
+        dataset = {};
+        dataset[data.data.metadata.title] = data;
+        selectedDataset = data.data.metadata.title;
+        populateMenu();
+      }
     }
   };
   xmlhttp.open("GET","population_1040712.json",true);
   xmlhttp.send();
 }
 
-function drawPieChart(dataName, elemIds) {
-  if (!dataset) return;
-  if (dataset.data.body.districts.indexOf(dataName) < 0) return;
+function populateMenu() {
+  var htmlStr = '';
+  for (var datasetName in dataset) {
+    var r = dataset[datasetName];
+    var isActive = (datasetName == selectedDataset) ? 'active':'';
+    htmlStr += '<li class="datasetNames black-text '+isActive+'">'+datasetName+'</li>';
+  }
+  $('#slide-out > div').append($(htmlStr));
+  $('.datasetNames').click(function() {
+    selectedDataset = $(this).text();
+    $('.datasetNames').removeClass('active');
+    $(this).addClass('active');
+  });
+}
 
+var infoPaneOpened = false;
+function openInfoPane() {
+  if (!infoPaneOpened) {
+    $('#infoBody').scrollTop(0);
+    $('#info-right').css('right', 0);
+  }
+  infoPaneOpened = true;
+}
+
+function closeInfoPane() {
+  $('#info-right').css('right', -510);
+  infoPaneOpened = false;
+}
+
+$('#info-close').click(closeInfoPane);
+
+function drawPieChart(district, elemIds) {
+  if (!dataset) return;
+  if (dataset[selectedDataset].data.body.districts.indexOf(district) < 0) return;
+
+  var selectedData = dataset[selectedDataset].data;
   var chartOptions = {
     legend: {
       position: 'labeled'
@@ -32,10 +71,10 @@ function drawPieChart(dataName, elemIds) {
   };
   for (var i = 0; i < elemIds.length; ++i) {
     var e = elemIds[i];
-    var r = dataset.data.body.stats[e.category];
+    var r = selectedData.body.stats[e.category];
     var chartData = [[e.category, 'value']];
-    for (var prop in r[dataName]) {
-      var v = r[dataName][prop];
+    for (var prop in r[district]) {
+      var v = r[district][prop];
       chartData.push([prop, v]);
     }
     var data = google.visualization.arrayToDataTable(chartData);
@@ -44,21 +83,22 @@ function drawPieChart(dataName, elemIds) {
   }
 }
 
-function populateInfo(dataName) {
+function populateInfo(district) {
   if (!dataset) return;
-  if (dataset.data.body.districts.indexOf(dataName) < 0) return;
+  if (dataset[selectedDataset].data.body.districts.indexOf(district) < 0) return;
 
-  var htmlStr = '<h3 style="color:#727272">' + dataName + '</h3>';
-  htmlStr += '<p id="infoNotes">' + dataset.data.metadata.notes+ '</p>';
-  var stats = dataset.data.body.stats;
+  var selectedData = dataset[selectedDataset].data;
+  var htmlStr = '<h3 style="color:#727272">' + district + '</h3>';
+  htmlStr += '<p id="infoNotes">' + selectedData.metadata.notes+ '</p>';
+  var stats = selectedData.body.stats;
   var elemIdsToDraw = [];
   for (var cat in stats) {
     var r = stats[cat];
     htmlStr += '<div class="card"><div class="card-content"><span class="card-title black-text">'+cat+'</span>';
 
-    if (dataset.data.body.categoriesWithChart.indexOf(cat) < 0) {
-      for (var prop in r[dataName]) {
-        var v = r[dataName][prop];
+    if (selectedData.body.categoriesWithChart.indexOf(cat) < 0) {
+      for (var prop in r[district]) {
+        var v = r[district][prop];
         htmlStr += '<div>' + prop + ': ' + v + '</div>';
       }
     } else {
@@ -73,7 +113,7 @@ function populateInfo(dataName) {
   }
 
   $('#infoBody').html(htmlStr);
-  drawPieChart(dataName, elemIdsToDraw);
+  drawPieChart(district, elemIdsToDraw);
 }
 
 var map;
@@ -118,11 +158,12 @@ function initialize() {
 	  
 	  var clickedFeature = null;
 	  map.data.addListener('click', function(event) {
+      map.data.revertStyle();
 	    clickedFeature = event.feature;
       map.data.overrideStyle(clickedFeature, { fillColor: 'red', strokeColor: 'red', strokeWeight: 3});
-	    var dataName = event.feature.getProperty('name');
-	    populateInfo(dataName);
-      $(".info-trigger").sideNav('show');
+	    var district = event.feature.getProperty('name');
+	    populateInfo(district);
+      openInfoPane();
     });
 
 	  // When the user hovers, tempt them to click by outlining the letters.
@@ -147,9 +188,4 @@ function initialize() {
 google.maps.event.addDomListener(window, 'load', initialize);
 
 $(".button-collapse").sideNav();
-$(".info-trigger").sideNav({
-  menuWidth: 500,
-  edge: 'right',
-  overlay: false
-});
 });

@@ -32,6 +32,20 @@ main {
   border-radius: 3px;
 }
 
+#info-right {
+  right: -510px;
+  width: 500px;
+  transition: 0.2s;
+}
+
+#info-close {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  padding: 12px 24px;
+  cursor: pointer;
+}
+
 .button-collapse.menu {
   padding-left: 16px;
   padding-right: 16px;
