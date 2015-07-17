@@ -17,23 +17,63 @@ function loadData() {
   xmlhttp.send();
 }
 
-function genInfoWindowContent(dataName) {
+function drawPieChart(dataName, elemIds) {
   if (!dataset) return;
   if (dataset.data.body.districts.indexOf(dataName) < 0) return;
 
-  var out = '<b>' + dataName + '</b>';
-  var stats = dataset.data.body.stats;
-  for (var cat in stats) {
-    var r = stats[cat];
-    out += '<ul>'+cat;
+  var chartOptions = {
+    legend: {
+      position: 'labeled'
+    },
+    chartArea: {
+      width: '90%',
+      height: '90%'
+    }
+  };
+  for (var i = 0; i < elemIds.length; ++i) {
+    var e = elemIds[i];
+    var r = dataset.data.body.stats[e.category];
+    var chartData = [[e.category, 'value']];
     for (var prop in r[dataName]) {
       var v = r[dataName][prop];
-      out += '<li>' + prop + ': ' + v + '</li>';
+      chartData.push([prop, v]);
     }
-    out += '</ul>';
+    var data = google.visualization.arrayToDataTable(chartData);
+    var chart = new google.visualization.PieChart(document.getElementById(e.elemId));
+    chart.draw(data, chartOptions);
+  }
+}
+
+function populateInfo(dataName) {
+  if (!dataset) return;
+  if (dataset.data.body.districts.indexOf(dataName) < 0) return;
+
+  var htmlStr = '<h3 style="color:#727272">' + dataName + '</h3>';
+  htmlStr += '<p id="infoNotes">' + dataset.data.metadata.notes+ '</p>';
+  var stats = dataset.data.body.stats;
+  var elemIdsToDraw = [];
+  for (var cat in stats) {
+    var r = stats[cat];
+    htmlStr += '<div class="card"><div class="card-content"><span class="card-title black-text">'+cat+'</span>';
+
+    if (dataset.data.body.categoriesWithChart.indexOf(cat) < 0) {
+      for (var prop in r[dataName]) {
+        var v = r[dataName][prop];
+        htmlStr += '<div>' + prop + ': ' + v + '</div>';
+      }
+    } else {
+      var elemId = 'piechart'+elemIdsToDraw.length;
+      elemIdsToDraw.push({
+        category: cat,
+        elemId: elemId
+      });
+      htmlStr += '<div id="'+elemId+'" style="width: 100%; height: 250px;"></div>';
+    }
+    htmlStr += '</div></div></div>';
   }
 
-  return out;
+  $('#infoBody').html(htmlStr);
+  drawPieChart(dataName, elemIdsToDraw);
 }
 
 var map;
@@ -61,7 +101,6 @@ function initialize() {
   xmlhttp.open("GET","taipei.kml",true);
   xmlhttp.send();
 
-  var lastInfoWindowOpened = null;
   function onKMLDocFetched(kml) {
 	  var geoJson = toGeoJSON.kml(kml);
 	  // Load a GeoJSON from the same server as our demo.
@@ -82,18 +121,8 @@ function initialize() {
 	    clickedFeature = event.feature;
       map.data.overrideStyle(clickedFeature, { fillColor: 'red', strokeColor: 'red', strokeWeight: 3});
 	    var dataName = event.feature.getProperty('name');
-	    var contentString = genInfoWindowContent(dataName);
-	    if (contentString) {
-        var infoWindow = new google.maps.InfoWindow({ 
-          content: contentString
-        });
-        infoWindow.setPosition(event.latLng);
-        if (lastInfoWindowOpened) {
-          lastInfoWindowOpened.close();
-        }
-        lastInfoWindowOpened = infoWindow;
-        infoWindow.open(map);
-      }
+	    populateInfo(dataName);
+      $(".info-trigger").sideNav('show');
     });
 
 	  // When the user hovers, tempt them to click by outlining the letters.
@@ -118,4 +147,9 @@ function initialize() {
 google.maps.event.addDomListener(window, 'load', initialize);
 
 $(".button-collapse").sideNav();
+$(".info-trigger").sideNav({
+  menuWidth: 500,
+  edge: 'right',
+  overlay: false
+});
 });

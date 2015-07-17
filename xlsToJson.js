@@ -17,7 +17,7 @@ var out = {
   data: {
     metadata: {
       title: '各區人口統計',
-      notes: '備註\n'+
+      notes: 
         '1.公民數為20歲以上人口。\n'+
         '2.扶養比指每一百位有生產能力的成年人(15～64歲)所扶養或負擔無生產能力(14歲以下及65歲以上)的人口比例。\n'+
         '3.新移民東南亞前5國為越南、印尼、泰國、菲律賓、緬甸。\n'+
@@ -26,6 +26,7 @@ var out = {
     body: {
       districts: [],
       categories: wb.SheetNames,
+      categoriesWithChart: [],
       stats: {}
     }
   }
@@ -33,6 +34,9 @@ var out = {
 
 
 for (var sn in wb.Sheets) {
+  if (sn != '總') {
+    out.data.body.categoriesWithChart.push(sn);
+  }
   var ws = wb.Sheets[sn];
   var wsJson = xls.utils.sheet_to_json(ws, { raw: true });
   var districts = [];
