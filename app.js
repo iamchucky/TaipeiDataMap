@@ -3,25 +3,15 @@ $(document).ready(function() {
 var dataset = null;
 var selectedDataset = '';
 function loadData() {
-  var xmlhttp;
-  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-    xmlhttp = new XMLHttpRequest();
-  } else {// code for IE6, IE5
-    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-  }
-  xmlhttp.onreadystatechange = function() {
-    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-      var data = JSON.parse(xmlhttp.responseText);
-      if (data.data) {
-        dataset = {};
-        dataset[data.data.metadata.title] = data;
-        selectedDataset = data.data.metadata.title;
-        populateMenu();
-      }
+  ajax('GET', 'population_1040712.json', function(xmlhttp) {
+    var data = JSON.parse(xmlhttp.responseText);
+    if (data.data) {
+      dataset = {};
+      dataset[data.data.metadata.title] = data;
+      selectedDataset = data.data.metadata.title;
+      populateMenu();
     }
-  };
-  xmlhttp.open("GET","population_1040712.json",true);
-  xmlhttp.send();
+  });
 }
 
 function populateMenu() {
@@ -116,7 +106,38 @@ function populateInfo(district) {
   drawPieChart(district, elemIdsToDraw);
 }
 
+function ajax(method, url, callback, payload) {
+  var xmlhttp;
+  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp = new XMLHttpRequest();
+  } else {// code for IE6, IE5
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+      if (callback) {
+        callback(xmlhttp);
+      }
+    }
+  };
+  xmlhttp.open(method, url, true);
+  xmlhttp.send();
+}
+
 var map;
+
+function setVisibleData(visibleResolution) {
+  map.data.setStyle(function(feature) {
+    var color = 'gray';
+    var visible = (feature.getProperty('resolution') === visibleResolution);
+    return /** @type {google.maps.Data.StyleOptions} */({
+      fillColor: color,
+      strokeColor: color,
+      strokeWeight: 1,
+      visible: visible
+    });
+  })
+}
 function initialize() {
   loadData();
 
@@ -127,35 +148,26 @@ function initialize() {
     disableDefaultUI: true
   });
   
-  var xmlhttp;
-  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-    xmlhttp = new XMLHttpRequest();
-  } else {// code for IE6, IE5
-    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-  }
-  xmlhttp.onreadystatechange = function() {
-    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-      onKMLDocFetched(xmlhttp.responseXML);
-    }
-  };
-  xmlhttp.open("GET","taipei.kml",true);
-  xmlhttp.send();
+  ajax('GET', 'districts.kml', function(xmlhttp) {
+	  map.data.addGeoJson(toGeoJSON.kml(xmlhttp.responseXML));
+	  map.data.forEach(function(feature) {
+	    feature.setProperty('resolution', 'district');
+    });
 
-  function onKMLDocFetched(kml) {
-	  var geoJson = toGeoJSON.kml(kml);
-	  // Load a GeoJSON from the same server as our demo.
-	  //map.data.loadGeoJson('taipei.json');
-	  map.data.addGeoJson(geoJson);
-	  
-	  map.data.setStyle(function(feature) {
-      var color = 'gray';
-      return /** @type {google.maps.Data.StyleOptions} */({
-        fillColor: color,
-        strokeColor: color,
-        strokeWeight: 1
+    ajax('GET', 'villages.kml', function(xmlhttp) {
+      map.data.addGeoJson(toGeoJSON.kml(xmlhttp.responseXML));
+      map.data.forEach(function(feature) {
+        if (feature.getProperty('resolution') !== 'district') {
+          feature.setProperty('resolution', 'village');
+        }
       });
-	  })
-	  
+
+      setVisibleData('district');
+      registerListeners();
+    });
+  });
+
+  function registerListeners() {
 	  var clickedFeature = null;
 	  map.data.addListener('click', function(event) {
       map.data.revertStyle();
@@ -182,7 +194,19 @@ function initialize() {
       map.data.revertStyle();
       map.data.overrideStyle(clickedFeature, { fillColor: 'red', strokeColor: 'red', strokeWeight: 3});
 	  });
-  };
+
+	  $('#navVillage').click(function() {
+	    $(this).addClass('active');
+	    $('#navDistrict').removeClass('active');
+	    setVisibleData('village');
+    });
+	  $('#navDistrict').click(function() {
+	    $(this).addClass('active');
+	    $('#navVillage').removeClass('active');
+	    setVisibleData('district');
+    });
+  }
+
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);

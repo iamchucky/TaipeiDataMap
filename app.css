@@ -13,6 +13,10 @@ main {
   font-size: 1.25em;
 }
 
+#nav-resolution a {
+  cursor: pointer;
+}
+
 #infoBody {
   color: initial;
   height: 100%;
@@ -50,12 +54,17 @@ main {
   padding-left: 16px;
   padding-right: 16px;
 }
- header, main, footer {
+header, main, footer {
   padding-left: 240px;
 }
 
 @media only screen and (max-width : 992px) {
   header, main, footer {
     padding-left: 0;
+  }
+
+  .navbar-fixed, nav, nav .button-collapse, nav .button-collapse i {
+    line-height: 64px;
+    height: 64px;
   }
 }
