@@ -53,6 +53,9 @@
 	</Style>
 	<Placemark>
 		<name>文山區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -65,6 +68,9 @@
 	</Placemark>
 	<Placemark>
 		<name>萬華區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -77,6 +83,9 @@
 	</Placemark>
 	<Placemark>
 		<name>南港區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -89,6 +98,9 @@
 	</Placemark>
 	<Placemark>
 		<name>大安區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -101,6 +113,9 @@
 	</Placemark>
 	<Placemark>
 		<name>內湖區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -113,6 +128,9 @@
 	</Placemark>
 	<Placemark>
 		<name>士林區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -125,6 +143,9 @@
 	</Placemark>
 	<Placemark>
 		<name>松山區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -137,6 +158,9 @@
 	</Placemark>
 	<Placemark>
 		<name>信義區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -149,6 +173,9 @@
 	</Placemark>
 	<Placemark>
 		<name>中山區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -161,6 +188,9 @@
 	</Placemark>
 	<Placemark>
 		<name>中正區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -173,6 +203,9 @@
 	</Placemark>
 	<Placemark>
 		<name>大同區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>
@@ -185,6 +218,9 @@
 	</Placemark>
 	<Placemark>
 		<name>北投區</name>
+		<ExtendedData>
+			<SimpleData name="resolution">district</SimpleData>
+		</ExtendedData>
 		<styleUrl>#m_ylw-pushpin</styleUrl>
 		<Polygon>
 			<outerBoundaryIs>

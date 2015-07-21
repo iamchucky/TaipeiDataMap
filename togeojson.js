@@ -156,6 +156,38 @@ toGeoJSON = (function() {
                     lineStyle = get1(root, 'LineStyle'),
                     polyStyle = get1(root, 'PolyStyle');
 
+                // iterate over polygons to get center;
+                /*
+                var centerMax = { lat: -90, lng: -180 };
+                var centerMin = { lat: 90, lng: 180 };
+                if (geoms && geoms[0].type == 'Polygon') {
+                  var coords = geoms[0].coordinates[0];
+                  for (var i = 0; i < coords.length; ++i) {
+                    var c = coords[i];
+                    var lat = c[1];
+                    var lng = c[0];
+                    if (lat > centerMax.lat) {
+                      centerMax.lat = lat;
+                    }
+                    if (lng > centerMax.lng) {
+                      centerMax.lng = lng;
+                    }
+                    if (lat < centerMin.lat) {
+                      centerMin.lat = lat;
+                    }
+                    if (lng < centerMin.lng) {
+                      centerMin.lng = lng;
+                    }
+                  }
+                  if (coords.length > 0) {
+                    properties.center = {
+                      lat: (centerMax.lat + centerMin.lat) / 2,
+                      lng: (centerMax.lng + centerMin.lng) / 2
+                    }
+                  }
+                }
+                */
+
                 if (!geoms.length) return [];
                 if (name) properties.name = name;
                 if (styleUrl && styleIndex[styleUrl]) {

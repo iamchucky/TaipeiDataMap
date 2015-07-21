@@ -13,7 +13,21 @@ main {
   font-size: 1.25em;
 }
 
-#nav-resolution a {
+#slide-out li.datasetNames {
+  cursor: pointer;
+}
+
+#settingsDrop .title {
+  color: #727272;
+  font-size: 0.75em;
+  line-height: 1.5em;
+  padding: 0 5px;
+}
+#settingsDrop li {
+  padding: 0 5px;
+}
+
+.nav-icons a {
   cursor: pointer;
 }
 
