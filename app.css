@@ -13,6 +13,12 @@ main {
   font-size: 1.25em;
 }
 
+#preloader {
+  width: 32px;
+  height: 32px;
+  margin: 16px;
+}
+
 #slide-out li.datasetNames {
   cursor: pointer;
 }

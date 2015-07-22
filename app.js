@@ -271,6 +271,8 @@ function initialize() {
 
       setVisibleData('district');
       registerListeners();
+
+      $('#preloader').hide();
     });
   });
 
