@@ -1,10 +1,14 @@
 $(document).ready(function() {
 
 var dataset = null;
-var districts = [];
+var resolution = {
+  district: [],
+  village: []
+};
 var selectedDataset = '';
+var selectedResolution = 'district';
 function loadData() {
-  ajax('GET', 'datasets.json', function(xmlhttp) {
+  ajax('GET', 'dataset.json', function(xmlhttp) {
     var data = JSON.parse(xmlhttp.responseText);
     if (data) {
       dataset = data;
@@ -20,7 +24,7 @@ function populateFilterMenu() {
   var htmlStr = '';
   for (var datasetName in dataset) {
     var data = dataset[datasetName].data;
-    htmlStr += '<div>';
+    htmlStr += '<div dataset="'+datasetName+'" style="display:'+((selectedDataset == datasetName)?'block':'none')+'">';
     for (var s in data.body.properties) {
       htmlStr += '<div class="title">'+s+'</div>';
       var props = data.body.properties[s];
@@ -32,8 +36,8 @@ function populateFilterMenu() {
     }
     htmlStr += '</div>';
   }
-  $('#settingsDrop').html(htmlStr);
-  $('#settingsDrop li').click(function() {
+  $('#filterDrop').html(htmlStr);
+  $('#filterDrop li').click(function() {
     var datasetName = $(this).attr('dataset');
     var title = $(this).attr('title');
     var prop = $(this).text();
@@ -52,8 +56,12 @@ function getNormalizeValue(datasetName, title, prop) {
   var datas = dataset[datasetName].data.body.stats[title];
   var min = Number.MAX_VALUE;
   var max = 0;
-  for (var i = 0; i < districts.length; ++i) {
-    var val = datas[districts[i]][prop];
+  var res = resolution[selectedResolution];
+  for (var i = 0; i < res.length; ++i) {
+    if (!datas[res[i]]) {
+      console.log(res[i]);
+    }
+    var val = datas[res[i]][prop];
     if (val < min) {
       min = val;
     }
@@ -66,12 +74,16 @@ function getNormalizeValue(datasetName, title, prop) {
 }
 
 function showDataWithOpacity(datasetName, title, prop) {
+  var norm = getNormalizeValue(datasetName, title, prop);
   map.data.setStyle(function(feature) {
-    var color = 'blue';
+    var color = 'red';
     var resolution = feature.getProperty('resolution');
     var name = feature.getProperty('name');
     var belong = feature.getProperty('belong');
-    var visible = (resolution === 'district');
+    if (resolution == 'village') {
+      name = belong+name;
+    }
+    var visible = (resolution === selectedResolution && (name in dataset[datasetName].data.body.stats[title]));
     var out = {
       fillColor: color,
       strokeColor: color,
@@ -80,7 +92,6 @@ function showDataWithOpacity(datasetName, title, prop) {
     }
     if (visible) {
       var val = dataset[datasetName].data.body.stats[title][name][prop];
-      var norm = getNormalizeValue(datasetName, title, prop);
       out.fillOpacity = (val - norm.min) * norm.scale;
     }
     return out;
@@ -99,6 +110,14 @@ function populateMenu() {
     selectedDataset = $(this).text();
     $('.datasetNames').removeClass('active');
     $(this).addClass('active');
+
+    setVisibleData('district');
+    $('#resolutionToggle').text('區');
+    selectedResolution = 'district';
+
+    // display proper menu for the dataset
+    $('#filterDrop > div').hide();
+    $('#filterDrop > div[dataset="'+selectedDataset+'"]').show();
   });
 }
 
@@ -120,7 +139,6 @@ $('#info-close').click(closeInfoPane);
 
 function drawPieChart(district, elemIds) {
   if (!dataset) return;
-  if (dataset[selectedDataset].data.body.districts.indexOf(district) < 0) return;
 
   var selectedData = dataset[selectedDataset].data;
   var chartOptions = {
@@ -148,7 +166,6 @@ function drawPieChart(district, elemIds) {
 
 function populateInfo(district) {
   if (!dataset) return;
-  if (dataset[selectedDataset].data.body.districts.indexOf(district) < 0) return;
 
   var selectedData = dataset[selectedDataset].data;
   var htmlStr = '<h3 style="color:#727272">' + district + '</h3>';
@@ -239,11 +256,18 @@ function initialize() {
 	  map.data.addGeoJson(toGeoJSON.kml(xmlhttp.responseXML));
 	  map.data.forEach(function(feature) {
 	    var name = feature.getProperty('name');
-	    districts.push(name);
+	    resolution.district.push(name);
     });
 
     ajax('GET', 'villages.kml', function(xmlhttp) {
       map.data.addGeoJson(toGeoJSON.kml(xmlhttp.responseXML));
+      map.data.forEach(function(feature) {
+        var name = feature.getProperty('name');
+        var belong = feature.getProperty('belong');
+        if (!belong) return;
+
+        resolution.village.push(belong+name);
+      });
 
       setVisibleData('district');
       registerListeners();
@@ -255,17 +279,22 @@ function initialize() {
   });
 
   function registerListeners() {
+    $(document).keyup(function(e) {
+      if (e.which == 27) { // ESC
+        closeInfoPane();
+      }
+    });
+
 	  var clickedFeature = null;
 	  map.data.addListener('click', function(event) {
 	    var district = event.feature.getProperty('name');
-	    var resolution = event.feature.getProperty('resolution');
-	    if (resolution == 'district') {
-        setVisibleData(resolution, district);
-      } else {
-        map.data.revertStyle();
-        clickedFeature = event.feature;
-        map.data.overrideStyle(clickedFeature, { fillColor: 'red', strokeColor: 'red', strokeWeight: 3});
+      var belong = event.feature.getProperty('belong');
+      if (belong) {
+        district = belong + district;
       }
+      map.data.revertStyle();
+      clickedFeature = event.feature;
+      map.data.overrideStyle(clickedFeature, { fillColor: 'red', strokeColor: 'red', strokeWeight: 3});
 
 	    populateInfo(district);
       openInfoPane();
@@ -287,6 +316,10 @@ function initialize() {
       map.data.overrideStyle(clickedFeature, { fillColor: 'red', strokeColor: 'red', strokeWeight: 3});
       
       var district = event.feature.getProperty('name');
+      var belong = event.feature.getProperty('belong');
+      if (belong) {
+        district = belong + district;
+      }
 
       if (filterProperty) {
         var val = dataset[filterProperty.datasetName].data.body.stats[filterProperty.title][district][filterProperty.prop];
@@ -301,15 +334,18 @@ function initialize() {
       $('.pageTitle').text('');
 	  });
 
-	  $('#navVillage').click(function() {
-	    $(this).addClass('active');
-	    $('#navDistrict').removeClass('active');
-	    setVisibleData('village');
-    });
-	  $('#navDistrict').click(function() {
-	    $(this).addClass('active');
-	    $('#navVillage').removeClass('active');
-	    setVisibleData('district');
+	  $('#resolutionToggle').click(function() {
+	    if (selectedResolution == 'district') {
+        var hasVillage = dataset[selectedDataset].data.metadata.hasVillage;
+        if (!hasVillage) return;
+
+	      selectedResolution = 'village';
+	      $(this).text('里');
+      } else {
+	      selectedResolution = 'district';
+	      $(this).text('區');
+      }
+	    setVisibleData(selectedResolution);
     });
   }
 

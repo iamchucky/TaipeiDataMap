@@ -1,2 +1,2 @@
-population_1040712.json
-disadvantaged.json
+data/population/data.json
+data/disadvantaged/data.json

@@ -1,12 +1,7 @@
 var fs = require('fs');
 
-if (process.argv.length != 4) {
-  console.log('Usage: node concatDataset.js [inFile] [outFile]');
-  process.exit(-1);
-}
-
-var inFile = process.argv[2];
-var outFile = process.argv[3];
+var inFile = 'dataset.txt'; //process.argv[2];
+var outFile = 'dataset.json'; //process.argv[3];
 
 var out = {};
 

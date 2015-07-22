@@ -17,13 +17,13 @@ main {
   cursor: pointer;
 }
 
-#settingsDrop .title {
+#filterDrop .title {
   color: #727272;
   font-size: 0.75em;
   line-height: 1.5em;
   padding: 0 5px;
 }
-#settingsDrop li {
+#filterDrop li {
   padding: 0 5px;
 }
 

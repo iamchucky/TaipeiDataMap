@@ -16,15 +16,11 @@ var out = {
   source: '臺北市資訊局',
   data: {
     metadata: {
-      title: '各區人口統計',
-      notes: 
-        '1.公民數為20歲以上人口。\n'+
-        '2.扶養比指每一百位有生產能力的成年人(15～64歲)所扶養或負擔無生產能力(14歲以下及65歲以上)的人口比例。\n'+
-        '3.新移民東南亞前5國為越南、印尼、泰國、菲律賓、緬甸。\n'+
-        '4.本表統計期間截至104年5月止。'
+      title: '社會福利',
+      notes: '',
+      hasVillage: true
     },
     body: {
-      districts: [],
       categories: wb.SheetNames,
       categoriesWithChart: [],
       properties: {},
@@ -44,13 +40,11 @@ for (var sn in wb.Sheets) {
   }
   var ws = wb.Sheets[sn];
   var wsJson = xls.utils.sheet_to_json(ws, { raw: true });
-  var districts = [];
 
   for (var i = 0; i < wsJson.length; ++i) {
     var r = wsJson[i];
 
     var d = r['行政區'];
-    districts.push(d);
 
     if (!out.data.body.stats[sn]) {
       out.data.body.stats[sn] = {};
@@ -68,10 +62,6 @@ for (var sn in wb.Sheets) {
         out.data.body.properties[sn].push(prop);
       }
     }
-  }
-
-  if (out.data.body.districts.length == 0) {
-    out.data.body.districts = districts;
   }
 }
 
