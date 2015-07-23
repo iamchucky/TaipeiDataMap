@@ -1,6 +1,7 @@
 $(document).ready(function() {
 
 var dataset = null;
+var population = null;
 var resolution = {
   district: [],
   village: []
@@ -17,27 +18,34 @@ function loadData() {
       populateFilterMenu();
     }
   });
+  ajax('GET', 'population.json', function(xmlhttp) {
+    var data = JSON.parse(xmlhttp.responseText);
+    if (data) {
+      population = data;
+    }
+  });
 }
 
 var filterProperty = null;
+var ratioFilter = true;
 function populateFilterMenu() {
   var htmlStr = '';
   for (var datasetName in dataset) {
     var data = dataset[datasetName].data;
     htmlStr += '<div dataset="'+datasetName+'" style="display:'+((selectedDataset == datasetName)?'block':'none')+'">';
     for (var s in data.body.properties) {
+      htmlStr += '<li class="divider"></li>';
       htmlStr += '<div class="title">'+s+'</div>';
       var props = data.body.properties[s];
       for (var i = 0; i < props.length; ++i) {
         var p = props[i];
         htmlStr += '<li dataset="'+datasetName+'" title="'+s+'">'+p+'</li>';
       }
-      htmlStr += '<li class="divider"></li>';
     }
     htmlStr += '</div>';
   }
-  $('#filterDrop').html(htmlStr);
-  $('#filterDrop li').click(function() {
+  $('#filterDropList').html(htmlStr);
+  $('#filterDropList li').click(function() {
     var datasetName = $(this).attr('dataset');
     var title = $(this).attr('title');
     var prop = $(this).text();
@@ -46,8 +54,14 @@ function populateFilterMenu() {
       title: title,
       prop: prop
     };
+    $('#filterDropList li').removeClass('active');
+    $(this).addClass('active');
 
     showDataWithOpacity(datasetName, title, prop);
+  });
+  $('#useRatioFilter').click(function() {
+    ratioFilter = !ratioFilter;
+    showDataWithOpacity(filterProperty.datasetName, filterProperty.title, filterProperty.prop);
   });
 }
 
@@ -62,6 +76,9 @@ function getNormalizeValue(datasetName, title, prop) {
       console.log(res[i]);
     }
     var val = datas[res[i]][prop];
+    if (ratioFilter) {
+      val /= population[res[i]];
+    }
     if (val < min) {
       min = val;
     }
@@ -92,6 +109,9 @@ function showDataWithOpacity(datasetName, title, prop) {
     }
     if (visible) {
       var val = dataset[datasetName].data.body.stats[title][name][prop];
+      if (ratioFilter) {
+        val /= population[name];
+      }
       out.fillOpacity = (val - norm.min) * norm.scale;
     }
     return out;
@@ -116,8 +136,9 @@ function populateMenu() {
     selectedResolution = 'district';
 
     // display proper menu for the dataset
-    $('#filterDrop > div').hide();
-    $('#filterDrop > div[dataset="'+selectedDataset+'"]').show();
+    $('#filterDropList > div').hide();
+    $('#filterDropList > div[dataset="'+selectedDataset+'"]').show();
+    $('#filterDropList li').removeClass('active');
   });
 }
 
@@ -325,7 +346,11 @@ function initialize() {
 
       if (filterProperty) {
         var val = dataset[filterProperty.datasetName].data.body.stats[filterProperty.title][district][filterProperty.prop];
-        district += ': '+val;
+        if (ratioFilter) {
+          district += ': '+(100*val/population[district]).toFixed(2)+'%';
+        } else {
+          district += ': '+val;
+        }
       }
       $('.pageTitle').text(district);
 	  });
@@ -348,6 +373,7 @@ function initialize() {
 	      $(this).text('區');
       }
 	    setVisibleData(selectedResolution);
+      $('#filterDropList li').removeClass('active');
     });
   }
 

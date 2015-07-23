@@ -29,7 +29,7 @@
             <ul id="slide-out" class="side-nav fixed">
               <div>
                 <li class="indigo z-depth-1">
-                  <a>
+                  <a style="padding:0;">
                     <span class="pageTitle white-text"></span>
                   </a>
                 </li>
@@ -41,6 +41,12 @@
               <li>
                 <a class="dropdown-button" data-activates="filterDrop" data-constrainwidth="false" data-beloworigin="true"><i class="material-icons">filter_list</i></a>
                 <ul id="filterDrop" class="dropdown-content" style="color:black;">
+                  <form>
+                    <input type="checkbox" id="useRatioFilter" checked />
+                    <label for="useRatioFilter" style="margin-left:15px">比例</label>
+                  </form>
+                  <div id="filterDropList">
+                  </div>
                 </ul>
               </li>
               <li><a id="resetState"><i class="material-icons">refresh</i></a></li>
