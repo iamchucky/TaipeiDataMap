@@ -1,13 +1,12 @@
 var xls = require('xlsjs');
 var fs = require('fs');
 
-if (process.argv.length != 4) {
-  console.log('Usage: node xlsToJson.js [inFile] [outFile]');
+if (process.argv.length != 3) {
+  console.log('Usage: node xlsToJson.js [inFile]');
   process.exit(-1);
 }
 
 var inFile = process.argv[2];
-var outFile = process.argv[3];
 var wb = xls.readFile(inFile);
 
 var out = {
@@ -50,14 +49,14 @@ for (var sn in wb.Sheets) {
       out.data.body.stats[sn] = {};
     }
     if (!out.data.body.stats[sn][d]) {
-      out.data.body.stats[sn][d] = {};
+      out.data.body.stats[sn][d] = [];
     }
     
     for (var prop in r) {
       if (prop == 'undefined') continue;
       if (prop == '行政區') continue;
 
-      out.data.body.stats[sn][d][prop] = r[prop];
+      out.data.body.stats[sn][d].push(r[prop]);
 
       if (i == 0) {
         out.data.body.properties[sn].push(prop);
@@ -66,4 +65,5 @@ for (var sn in wb.Sheets) {
   }
 }
 
-fs.writeFileSync(outFile, JSON.stringify(out, undefined, 2));
+fs.writeFileSync('data.json', JSON.stringify(out));
+fs.writeFileSync('data_human.json', JSON.stringify(out, undefined, 2));

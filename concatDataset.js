@@ -1,7 +1,6 @@
 var fs = require('fs');
 
 var inFile = 'dataset.txt'; //process.argv[2];
-var outFile = 'dataset.json'; //process.argv[3];
 
 var out = {};
 
@@ -15,4 +14,5 @@ for (var i = 0; i < inFiles.length; ++i) {
   out[title] = json;
 }
 
-fs.writeFileSync(outFile, JSON.stringify(out, undefined, 2));
+fs.writeFileSync('dataset.json', JSON.stringify(out));
+fs.writeFileSync('dataset_human.json', JSON.stringify(out, undefined, 2));

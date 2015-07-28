@@ -68,6 +68,7 @@ function populateFilterMenu() {
 function getNormalizeValue(datasetName, title, prop) {
   // find max and min of the values
   var datas = dataset[datasetName].data.body.stats[title];
+  var propInd = dataset[datasetName].data.body.properties[title].indexOf(prop);
   var min = Number.MAX_VALUE;
   var max = 0;
   var res = resolution[selectedResolution];
@@ -75,7 +76,7 @@ function getNormalizeValue(datasetName, title, prop) {
     if (!datas[res[i]]) {
       console.log(res[i]);
     }
-    var val = datas[res[i]][prop];
+    var val = datas[res[i]][propInd];
     if (ratioFilter) {
       val /= population[res[i]];
     }
@@ -108,7 +109,8 @@ function showDataWithOpacity(datasetName, title, prop) {
       visible: visible
     }
     if (visible) {
-      var val = dataset[datasetName].data.body.stats[title][name][prop];
+      var propInd = dataset[datasetName].data.body.properties[title].indexOf(prop);
+      var val = dataset[datasetName].data.body.stats[title][name][propInd];
       if (ratioFilter) {
         val /= population[name];
       }
@@ -175,8 +177,10 @@ function drawPieChart(district, elemIds) {
     var e = elemIds[i];
     var r = selectedData.body.stats[e.category];
     var chartData = [[e.category, 'value']];
-    for (var prop in r[district]) {
-      var v = r[district][prop];
+    var props = selectedData.body.properties[e.category];
+    for (var j = 0; j < props.length; ++j) {
+      var prop = props[j];
+      var v = r[district][j];
       chartData.push([prop, v]);
     }
     var data = google.visualization.arrayToDataTable(chartData);
@@ -205,8 +209,10 @@ function populateInfo(district) {
       });
       htmlStr += '<div id="'+elemId+'" style="width: 100%; height: 250px;"></div>';
     }
-    for (var prop in r[district]) {
-      var v = r[district][prop];
+    var props = selectedData.body.properties[cat];
+    for (var j = 0; j < props.length; ++j) {
+      var prop = props[j];
+      var v = r[district][j];
       htmlStr += '<div>' + prop + ': ' + v + '</div>';
     }
 
@@ -345,7 +351,8 @@ function initialize() {
       }
 
       if (filterProperty) {
-        var val = dataset[filterProperty.datasetName].data.body.stats[filterProperty.title][district][filterProperty.prop];
+        var propInd = dataset[filterProperty.datasetName].data.body.properties[filterProperty.title].indexOf(filterProperty.prop);
+        var val = dataset[filterProperty.datasetName].data.body.stats[filterProperty.title][district][propInd];
         if (ratioFilter) {
           district += ': '+(100*val/population[district]).toFixed(2)+'%';
         } else {
