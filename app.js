@@ -11,11 +11,19 @@ var selectedResolution = 'district';
 var selectedMonth = 1;
 var clickedFeature = null;
 $('#monthRange').on('input', function(e) {
-  $('#selectedMonthText').text($(this).val());
+  var val = $(this).val();
+  if (val == 0) {
+    val = '總';
+  } else {
+    val += '月';
+  }
+  $('#selectedMonthText').text(val);
 });
 $('#monthRange').change(function(e) {
   selectedMonth = $(this).val();
-  showDataWithOpacity(filterProperty.datasetName, filterProperty.title, filterProperty.prop);
+  if (filterProperty) {
+    showDataWithOpacity(filterProperty.datasetName, filterProperty.title, filterProperty.prop);
+  }
   if (infoPaneOpened) {
     var district = clickedFeature.getProperty('belong');
     var vil = clickedFeature.getProperty('name');

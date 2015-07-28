@@ -85,7 +85,7 @@ header, main, footer {
 #selectedMonthText {
   position: absolute;
   top: 0px;
-  width: 28px;
+  width: 32px;
   margin-left: 140px;
 }
 
@@ -95,7 +95,7 @@ header, main, footer {
 
 #monthRangeContainer {
   float: left;
-  padding-right: 28px;
+  padding-right: 48px;
   padding-left: 5px;
   display: none;
 }
