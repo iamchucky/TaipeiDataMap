@@ -22,7 +22,7 @@ for (var i = 1; i < lines.length; ++i) {
     stats[village] = {};
   }
 
-  var d = new Date(r[1]);
+  var d = new Date(r[2]);
   out[r[0]] = {
     type: r[1],
     time: d,
@@ -33,26 +33,24 @@ for (var i = 1; i < lines.length; ++i) {
   }
 }
 for (var district in stats) {
+  stats[district] = [];
   for (var i = 0; i < types.length; ++i) {
-    stats[district][types[i]] = 0;
+    stats[district].push(Array.apply(null, new Array(13)).map(Number.prototype.valueOf,0));
   }
 }
 
 for (var id in out) {
   var r = out[id];
-  stats[r.district][r.type] += 1;
-  if (r.village) {
-    stats[r.village][r.type] += 1;
-  }
-}
+  var typeInd = types.indexOf(r.type);
+  stats[r.district][typeInd][0] += 1;
 
-// convert to just arrays under districts
-for (var district in stats) {
-  var tArray = [];
-  for (var i = 0; i < types.length; ++i) {
-    tArray.push(stats[district][types[i]]);
+  var month = (new Date(r.time.getTime() + 8*3600000)).getMonth()+1;
+  stats[r.district][typeInd][month] += 1;
+
+  if (r.village) {
+    stats[r.village][typeInd][0] += 1;
+    stats[r.village][typeInd][month] += 1;
   }
-  stats[district] = tArray;
 }
 
 var statsOut = {
@@ -63,7 +61,8 @@ var statsOut = {
     metadata: {
       title: '1999通報',
       notes: '',
-      hasVillage: true
+      hasVillage: true,
+      hasTime: true
     },
     body: {
       categories: '總',

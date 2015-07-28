@@ -24,7 +24,7 @@
     <header>
       <div class="navbar-fixed">
         <nav>
-          <div class="nav-wrapper indigo">
+          <div class="nav-wrapper">
             <a href data-activates="slide-out" class="button-collapse menu"><i class="material-icons">menu</i></a>
             <ul id="slide-out" class="side-nav fixed">
               <div>
@@ -49,6 +49,12 @@
                   </div>
                 </ul>
               </li>
+
+              <div id="monthRangeContainer">
+                <input type="range" id="monthRange" min="0" max="12" value="0" />
+                <span id="selectedMonthText">0</span>
+              </div>
+
               <li><a id="resetState"><i class="material-icons">refresh</i></a></li>
               <div id="preloader" class="preloader-wrapper active">
                 <div class="spinner-layer spinner-red-only" style="border-color: white">
@@ -61,6 +67,8 @@
                   </div>
                 </div>
               </div>
+
+
             </ul>
             <ul id="info-right" class="side-nav grey lighten-3 right-aligned">
               <div id="infoBody"></div>

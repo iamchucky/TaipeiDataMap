@@ -8,6 +8,15 @@ var resolution = {
 };
 var selectedDataset = '';
 var selectedResolution = 'district';
+var selectedMonth = 1;
+$('#monthRange').on('input', function(e) {
+  $('#selectedMonthText').text($(this).val());
+});
+$('#monthRange').change(function(e) {
+  selectedMonth = $(this).val();
+  showDataWithOpacity(filterProperty.datasetName, filterProperty.title, filterProperty.prop);
+});
+
 function loadData() {
   ajax('GET', 'dataset.json', function(xmlhttp) {
     var data = JSON.parse(xmlhttp.responseText);
@@ -72,11 +81,16 @@ function getNormalizeValue(datasetName, title, prop) {
   var min = Number.MAX_VALUE;
   var max = 0;
   var res = resolution[selectedResolution];
+  var hasTime = dataset[datasetName].data.metadata.hasTime;
   for (var i = 0; i < res.length; ++i) {
     if (!datas[res[i]]) {
       console.log(res[i]);
     }
     var val = datas[res[i]][propInd];
+    if (hasTime) {
+      val = val[selectedMonth];
+    }
+
     if (ratioFilter) {
       val /= population[res[i]];
     }
@@ -111,6 +125,10 @@ function showDataWithOpacity(datasetName, title, prop) {
     if (visible) {
       var propInd = dataset[datasetName].data.body.properties[title].indexOf(prop);
       var val = dataset[datasetName].data.body.stats[title][name][propInd];
+      var hasTime = dataset[datasetName].data.metadata.hasTime;
+      if (hasTime) {
+        val = val[selectedMonth];
+      }
       if (ratioFilter) {
         val /= population[name];
       }
@@ -141,6 +159,12 @@ function populateMenu() {
     $('#filterDropList > div').hide();
     $('#filterDropList > div[dataset="'+selectedDataset+'"]').show();
     $('#filterDropList li').removeClass('active');
+
+    if (dataset[selectedDataset].data.metadata.hasTime) {
+      $('#monthRangeContainer').show();
+    } else {
+      $('#monthRangeContainer').hide();
+    }
   });
 }
 
@@ -181,6 +205,10 @@ function drawPieChart(district, elemIds) {
     for (var j = 0; j < props.length; ++j) {
       var prop = props[j];
       var v = r[district][j];
+      var hasTime = selectedData.metadata.hasTime;
+      if (hasTime) {
+        v = v[selectedMonth];
+      }
       chartData.push([prop, v]);
     }
     var data = google.visualization.arrayToDataTable(chartData);
@@ -213,6 +241,10 @@ function populateInfo(district) {
     for (var j = 0; j < props.length; ++j) {
       var prop = props[j];
       var v = r[district][j];
+      var hasTime = selectedData.metadata.hasTime;
+      if (hasTime) {
+        v = v[selectedMonth];
+      }
       htmlStr += '<div>' + prop + ': ' + v + '</div>';
     }
 
@@ -353,6 +385,10 @@ function initialize() {
       if (filterProperty) {
         var propInd = dataset[filterProperty.datasetName].data.body.properties[filterProperty.title].indexOf(filterProperty.prop);
         var val = dataset[filterProperty.datasetName].data.body.stats[filterProperty.title][district][propInd];
+        var hasTime = dataset[filterProperty.datasetName].data.metadata.hasTime;
+        if (hasTime) {
+          val = val[selectedMonth];
+        }
         if (ratioFilter) {
           district += ': '+(100*val/population[district]).toFixed(2)+'%';
         } else {
