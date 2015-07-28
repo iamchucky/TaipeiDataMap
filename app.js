@@ -9,12 +9,21 @@ var resolution = {
 var selectedDataset = '';
 var selectedResolution = 'district';
 var selectedMonth = 1;
+var clickedFeature = null;
 $('#monthRange').on('input', function(e) {
   $('#selectedMonthText').text($(this).val());
 });
 $('#monthRange').change(function(e) {
   selectedMonth = $(this).val();
   showDataWithOpacity(filterProperty.datasetName, filterProperty.title, filterProperty.prop);
+  if (infoPaneOpened) {
+    var district = clickedFeature.getProperty('belong');
+    var vil = clickedFeature.getProperty('name');
+    if (vil) {
+      district += vil;
+    }
+    populateInfo(district);
+  }
 });
 
 function loadData() {
@@ -70,7 +79,9 @@ function populateFilterMenu() {
   });
   $('#useRatioFilter').click(function() {
     ratioFilter = !ratioFilter;
-    showDataWithOpacity(filterProperty.datasetName, filterProperty.title, filterProperty.prop);
+    if (filterProperty) {
+      showDataWithOpacity(filterProperty.datasetName, filterProperty.title, filterProperty.prop);
+    }
   });
 }
 
@@ -351,7 +362,6 @@ function initialize() {
       }
     });
 
-	  var clickedFeature = null;
 	  map.data.addListener('click', function(event) {
 	    var district = event.feature.getProperty('name');
       var belong = event.feature.getProperty('belong');
