@@ -153,6 +153,11 @@ function populateMenu() {
 
     setVisibleData('district');
     $('#resolutionToggle').text('區');
+    if (dataset[selectedDataset].data.metadata.hasVillage) {
+      $('#resolutionToggle').show();
+    } else {
+      $('#resolutionToggle').hide();
+    }
     selectedResolution = 'district';
 
     // display proper menu for the dataset
