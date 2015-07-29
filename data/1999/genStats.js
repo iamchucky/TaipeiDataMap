@@ -61,6 +61,7 @@ var statsOut = {
     metadata: {
       title: '1999通報',
       notes: '',
+      raw: 'https://www.google.com/fusiontables/data?docid=1o7BPfxOIHF2RMxRaa9HF25uIPh8rfBRToTto2tl3',
       hasVillage: true,
       hasTime: true
     },

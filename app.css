@@ -23,6 +23,21 @@ main {
   cursor: pointer;
 }
 
+#slide-out li.datasetNames.active:hover .rawDownload {
+  display: inline-block;
+}
+
+#slide-out .rawDownload:hover {
+  color: #444;
+}
+
+#slide-out .rawDownload {
+  display: none;
+  float: right;
+  color: #999;
+  margin-right: -15px;
+}
+
 #filterDrop .title {
   color: #727272;
   font-size: 0.75em;

@@ -163,11 +163,19 @@ function populateMenu() {
   for (var datasetName in dataset) {
     var r = dataset[datasetName];
     var isActive = (datasetName == selectedDataset) ? 'active':'';
-    htmlStr += '<li class="datasetNames black-text '+isActive+'">'+datasetName+'</li>';
+    var rawDownload = '';
+    if (r.data.metadata.raw) {
+      rawDownload = '<a href="'+r.data.metadata.raw+'" target="_blank" class="rawDownload"><i class="material-icons">insert_chart</i></a>';
+    }
+    htmlStr += '<li class="datasetNames black-text '+isActive+'" dataset="'+datasetName+'">'+datasetName+rawDownload+'</li>';
   }
   $('#slide-out > div').append($(htmlStr));
+  $('.rawDownload').click(function(e) {
+    e.stopPropagation();
+  });
+
   $('.datasetNames').click(function() {
-    selectedDataset = $(this).text();
+    selectedDataset = $(this).attr('dataset');
     $('.datasetNames').removeClass('active');
     $(this).addClass('active');
 

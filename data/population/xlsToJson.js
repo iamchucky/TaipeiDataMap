@@ -21,6 +21,7 @@ var out = {
         '2.扶養比指每一百位有生產能力的成年人(15～64歲)所扶養或負擔無生產能力(14歲以下及65歲以上)的人口比例。\n'+
         '3.新移民東南亞前5國為越南、印尼、泰國、菲律賓、緬甸。\n'+
         '4.本表統計期間截至104年5月止。',
+      raw: 'https://docs.google.com/spreadsheets/d/1SwWr4MoqB5MDXDL_EL0xGsdC56W2SW61Kzub--NfkIY',
       hasVillage: false
     },
     body: {
