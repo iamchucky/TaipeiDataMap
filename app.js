@@ -8,7 +8,8 @@ var resolution = {
 };
 var selectedDataset = '';
 var selectedResolution = 'district';
-var selectedMonth = 1;
+var selectedMonth = 0;
+var maxMonth = 8;
 var clickedFeature = null;
 $('#monthRange').on('input', function(e) {
   var val = $(this).val();
@@ -24,14 +25,16 @@ $('#monthRange').change(function(e) {
   if (filterProperty) {
     showDataWithOpacity(filterProperty.datasetName, filterProperty.title, filterProperty.prop);
   }
+  /*
   if (infoPaneOpened) {
-    var district = clickedFeature.getProperty('belong');
-    var vil = clickedFeature.getProperty('name');
-    if (vil) {
-      district += vil;
+    var belong = clickedFeature.getProperty('belong');
+    var district = clickedFeature.getProperty('name');
+    if (belong) {
+      district = belong + district;
     }
     populateInfo(district);
   }
+  */
 });
 
 function loadData() {
@@ -179,6 +182,8 @@ function populateMenu() {
     }
     selectedResolution = 'district';
 
+    closeInfoPane();
+
     // display proper menu for the dataset
     $('#filterDropList > div').hide();
     $('#filterDropList > div[dataset="'+selectedDataset+'"]').show();
@@ -231,12 +236,45 @@ function drawPieChart(district, elemIds) {
       var v = r[district][j];
       var hasTime = selectedData.metadata.hasTime;
       if (hasTime) {
-        v = v[selectedMonth];
+        //v = v[selectedMonth];
+        v = v[0];
       }
       chartData.push([prop, v]);
     }
     var data = google.visualization.arrayToDataTable(chartData);
-    var chart = new google.visualization.PieChart(document.getElementById(e.elemId));
+    var chart = new google.visualization.PieChart(document.getElementById(e.pie));
+    chart.draw(data, chartOptions);
+  }
+}
+
+function drawAreaChart(district, elemIds) {
+  if (!dataset) return;
+
+  var selectedData = dataset[selectedDataset].data;
+  if (!selectedData.metadata.hasTime) return;
+
+  var chartOptions = {
+    legend: 'none',
+    isStacked: true
+  };
+  for (var i = 0; i < elemIds.length; ++i) {
+    var e = elemIds[i];
+    var r = selectedData.body.stats[e.category];
+    var chartData = [['Month']];
+    var props = selectedData.body.properties[e.category];
+    for (var j = 0; j < props.length; ++j) {
+      chartData[0].push(props[j]);
+      for (var k = 1; k < maxMonth; ++k) {
+        var v = r[district][j][k];
+        if (j == 0) {
+          chartData.push([k+'月', v]);
+        } else {
+          chartData[k].push(v);
+        }
+      }
+    }
+    var data = google.visualization.arrayToDataTable(chartData);
+    var chart = new google.visualization.AreaChart(document.getElementById(e.area));
     chart.draw(data, chartOptions);
   }
 }
@@ -251,15 +289,26 @@ function populateInfo(district) {
   var elemIdsToDraw = [];
   for (var cat in stats) {
     var r = stats[cat];
-    htmlStr += '<div class="card"><div class="card-content"><span class="card-title black-text">'+cat+'</span>';
+    var catText = cat;
+    /*
+    if (catText == '總' && selectedData.metadata.hasTime && selectedMonth != 0) {
+      catText = selectedMonth + '月';
+    }
+    */
+    htmlStr += '<div class="card"><div class="card-content"><span class="card-title black-text">'+catText+'</span>';
 
     if (selectedData.body.categoriesWithChart.indexOf(cat) >= 0) {
-      var elemId = 'piechart'+elemIdsToDraw.length;
+      var pieElemId = 'piechart'+elemIdsToDraw.length;
+      var areaElemId = 'areachart'+elemIdsToDraw.length;
       elemIdsToDraw.push({
         category: cat,
-        elemId: elemId
+        pie: pieElemId,
+        area: areaElemId
       });
-      htmlStr += '<div id="'+elemId+'" style="width: 100%; height: 250px;"></div>';
+      htmlStr += '<div id="'+pieElemId+'" style="width: 100%; height: 250px;"></div>';
+      if (selectedData.metadata.hasTime) {
+        htmlStr += '<div id="'+areaElemId+'" style="width: 100%; height: 250px;"></div>';
+      }
     }
     var props = selectedData.body.properties[cat];
     for (var j = 0; j < props.length; ++j) {
@@ -267,7 +316,8 @@ function populateInfo(district) {
       var v = r[district][j];
       var hasTime = selectedData.metadata.hasTime;
       if (hasTime) {
-        v = v[selectedMonth];
+        //v = v[selectedMonth];
+        v = v[0];
       }
       htmlStr += '<div>' + prop + ': ' + v + '</div>';
     }
@@ -277,6 +327,9 @@ function populateInfo(district) {
 
   $('#infoBody').html(htmlStr);
   drawPieChart(district, elemIdsToDraw);
+  if (selectedData.metadata.hasTime) {
+    drawAreaChart(district, elemIdsToDraw);
+  }
 }
 
 function ajax(method, url, callback, payload) {
@@ -441,6 +494,7 @@ function initialize() {
       }
 	    setVisibleData(selectedResolution);
       $('#filterDropList li').removeClass('active');
+      closeInfoPane();
     });
   }
 
