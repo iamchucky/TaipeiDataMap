@@ -13,6 +13,11 @@ main {
   font-size: 1.25em;
 }
 
+#resolutionToggle {
+  font-size: 1.5em;
+  padding: 0 20px;
+}
+
 #preloader {
   width: 32px;
   height: 32px;
@@ -120,7 +125,7 @@ header, main, footer {
 #monthRangeContainer {
   float: left;
   padding-right: 48px;
-  padding-left: 5px;
+  padding-left: 20px;
   display: none;
 }
 
