@@ -70,6 +70,15 @@ main {
   cursor: pointer;
 }
 
+.areaChartLineOverlay {
+  position: absolute;
+  top: 48px;
+  left: 76px;
+  background-color: gray;
+  width: 1px;
+  height: 155px;
+}
+
 .button-collapse.menu {
   padding-left: 16px;
   padding-right: 16px;

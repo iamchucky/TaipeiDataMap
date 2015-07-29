@@ -9,7 +9,7 @@ var resolution = {
 var selectedDataset = '';
 var selectedResolution = 'district';
 var selectedMonth = 0;
-var maxMonth = 8;
+var maxMonth = 7;
 var clickedFeature = null;
 $('#monthRange').on('input', function(e) {
   var val = $(this).val();
@@ -25,7 +25,6 @@ $('#monthRange').change(function(e) {
   if (filterProperty) {
     showDataWithOpacity(filterProperty.datasetName, filterProperty.title, filterProperty.prop);
   }
-  /*
   if (infoPaneOpened) {
     var belong = clickedFeature.getProperty('belong');
     var district = clickedFeature.getProperty('name');
@@ -34,7 +33,6 @@ $('#monthRange').change(function(e) {
     }
     populateInfo(district);
   }
-  */
 });
 
 function loadData() {
@@ -236,8 +234,8 @@ function drawPieChart(district, elemIds) {
       var v = r[district][j];
       var hasTime = selectedData.metadata.hasTime;
       if (hasTime) {
-        //v = v[selectedMonth];
-        v = v[0];
+        v = v[selectedMonth];
+        //v = v[0];
       }
       chartData.push([prop, v]);
     }
@@ -255,7 +253,11 @@ function drawAreaChart(district, elemIds) {
 
   var chartOptions = {
     legend: 'none',
-    isStacked: true
+    isStacked: true,
+    crosshair: {
+      trigger: 'both',
+      orientation: 'vertical'
+    }
   };
   for (var i = 0; i < elemIds.length; ++i) {
     var e = elemIds[i];
@@ -264,7 +266,7 @@ function drawAreaChart(district, elemIds) {
     var props = selectedData.body.properties[e.category];
     for (var j = 0; j < props.length; ++j) {
       chartData[0].push(props[j]);
-      for (var k = 1; k < maxMonth; ++k) {
+      for (var k = 1; k <= maxMonth; ++k) {
         var v = r[district][j][k];
         if (j == 0) {
           chartData.push([k+'月', v]);
@@ -276,6 +278,16 @@ function drawAreaChart(district, elemIds) {
     var data = google.visualization.arrayToDataTable(chartData);
     var chart = new google.visualization.AreaChart(document.getElementById(e.area));
     chart.draw(data, chartOptions);
+
+    var cli = chart.getChartLayoutInterface();
+    /*
+    var bb = cli.getChartAreaBoundingBox();
+    bb.width = 1;
+    $('.areaChartLineOverlay').css(bb);
+    */
+    if (selectedMonth > 0) {
+      $('.areaChartLineOverlay').css('left', cli.getXLocation(selectedMonth-1));
+    }
   }
 }
 
@@ -290,11 +302,9 @@ function populateInfo(district) {
   for (var cat in stats) {
     var r = stats[cat];
     var catText = cat;
-    /*
     if (catText == '總' && selectedData.metadata.hasTime && selectedMonth != 0) {
       catText = selectedMonth + '月';
     }
-    */
     htmlStr += '<div class="card"><div class="card-content"><span class="card-title black-text">'+catText+'</span>';
 
     if (selectedData.body.categoriesWithChart.indexOf(cat) >= 0) {
@@ -307,7 +317,10 @@ function populateInfo(district) {
       });
       htmlStr += '<div id="'+pieElemId+'" style="width: 100%; height: 250px;"></div>';
       if (selectedData.metadata.hasTime) {
+        htmlStr += '<div style="position: relative">';
         htmlStr += '<div id="'+areaElemId+'" style="width: 100%; height: 250px;"></div>';
+        htmlStr += '<div class="areaChartLineOverlay"></div>';
+        htmlStr += '</div>';
       }
     }
     var props = selectedData.body.properties[cat];
@@ -316,8 +329,8 @@ function populateInfo(district) {
       var v = r[district][j];
       var hasTime = selectedData.metadata.hasTime;
       if (hasTime) {
-        //v = v[selectedMonth];
-        v = v[0];
+        v = v[selectedMonth];
+        //v = v[0];
       }
       htmlStr += '<div>' + prop + ': ' + v + '</div>';
     }
