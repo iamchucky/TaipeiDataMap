@@ -17,8 +17,19 @@
 
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/materialize.min.js"></script>
+    <script src="js/jquery.i18n.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
     <script src="togeojson.js"></script>
     <script src="app.js"></script>
+    <script src="locales.js"></script>
+    <script type="text/javascript">
+      var loc = $.cookie('locale');
+      if (loc && loc == 'en') {
+        $.i18n.load(i18nLocales.en);
+      } else {
+        $.i18n.load(i18nLocales.zh);
+      }
+    </script>
   </head>
   <body>
     <header>
@@ -43,7 +54,7 @@
                 <ul id="filterDrop" class="dropdown-content" style="color:black;">
                   <form>
                     <input type="checkbox" id="useRatioFilter" checked />
-                    <label for="useRatioFilter" style="margin-left:15px">比例</label>
+                    <label for="useRatioFilter" style="margin-left:15px" id="useRatioFilterLabel">比例</label>
                   </form>
                   <div id="filterDropList">
                   </div>
@@ -56,6 +67,7 @@
               </div>
 
               <li><a id="resetState"><i class="material-icons">refresh</i></a></li>
+              <li><a id="localeToggle" loc="en">English</a></li>
               <div id="preloader" class="preloader-wrapper active">
                 <div class="spinner-layer spinner-red-only" style="border-color: white">
                   <div class="circle-clipper left">

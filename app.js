@@ -11,12 +11,39 @@ var selectedResolution = 'district';
 var selectedMonth = 0;
 var maxMonth = 7;
 var clickedFeature = null;
+
+function switchLocale(locale) {
+  if (locale == 'en') {
+    $.cookie('locale', locale);
+  } else {
+    $.cookie('locale', 'zh');
+  }
+  location.reload();
+}
+
+$('#localeToggle').click(function() {
+  var loc = $(this).attr('loc');
+  switchLocale(loc);
+});
+
+var loc = $.cookie('locale');
+if (loc && loc == 'en') {
+  $('#localeToggle').text('中文');
+  $('#localeToggle').attr('loc', 'zh');
+}
+
+function populateProperLocale() {
+  $('#useRatioFilterLabel')._t('比例');
+  $('#selectedMonthText')._t('總');
+}
+
+populateProperLocale();
 $('#monthRange').on('input', function(e) {
   var val = $(this).val();
   if (val == 0) {
-    val = '總';
+    val = $.i18n._('總');
   } else {
-    val += '月';
+    val = $.i18n._(val+'月');
   }
   $('#selectedMonthText').text(val);
 });
@@ -62,11 +89,11 @@ function populateFilterMenu() {
     htmlStr += '<div dataset="'+datasetName+'" style="display:'+((selectedDataset == datasetName)?'block':'none')+'">';
     for (var s in data.body.properties) {
       htmlStr += '<li class="divider"></li>';
-      htmlStr += '<div class="title">'+s+'</div>';
+      htmlStr += '<div class="title">'+$.i18n._(s)+'</div>';
       var props = data.body.properties[s];
       for (var i = 0; i < props.length; ++i) {
         var p = props[i];
-        htmlStr += '<li dataset="'+datasetName+'" title="'+s+'">'+p+'</li>';
+        htmlStr += '<li dataset="'+datasetName+'" title="'+s+'" prop="'+p+'">'+$.i18n._(p)+'</li>';
       }
     }
     htmlStr += '</div>';
@@ -75,7 +102,7 @@ function populateFilterMenu() {
   $('#filterDropList li').click(function() {
     var datasetName = $(this).attr('dataset');
     var title = $(this).attr('title');
-    var prop = $(this).text();
+    var prop = $(this).attr('prop');
     filterProperty = {
       datasetName: datasetName,
       title: title,
@@ -167,7 +194,7 @@ function populateMenu() {
     if (r.data.metadata.raw) {
       rawDownload = '<a href="'+r.data.metadata.raw+'" target="_blank" class="rawDownload"><i class="material-icons">insert_chart</i></a>';
     }
-    htmlStr += '<li class="datasetNames black-text '+isActive+'" dataset="'+datasetName+'">'+datasetName+rawDownload+'</li>';
+    htmlStr += '<li class="datasetNames black-text '+isActive+'" dataset="'+datasetName+'">'+$.i18n._(datasetName)+rawDownload+'</li>';
   }
   $('#slide-out > div').append($(htmlStr));
   $('.rawDownload').click(function(e) {
@@ -180,7 +207,7 @@ function populateMenu() {
     $(this).addClass('active');
 
     setVisibleData('district');
-    $('#resolutionToggle').text('區');
+    $('#resolutionToggle')._t('區');
     if (dataset[selectedDataset].data.metadata.hasVillage) {
       $('#resolutionToggle').show();
     } else {
@@ -245,7 +272,7 @@ function drawPieChart(district, elemIds) {
         v = v[selectedMonth];
         //v = v[0];
       }
-      chartData.push([prop, v]);
+      chartData.push([$.i18n._(prop), v]);
     }
     var data = google.visualization.arrayToDataTable(chartData);
     var chart = new google.visualization.PieChart(document.getElementById(e.pie));
@@ -277,7 +304,7 @@ function drawAreaChart(district, elemIds) {
       for (var k = 1; k <= maxMonth; ++k) {
         var v = r[district][j][k];
         if (j == 0) {
-          chartData.push([k+'月', v]);
+          chartData.push([$.i18n._(k+'月'), v]);
         } else {
           chartData[k].push(v);
         }
@@ -303,15 +330,15 @@ function populateInfo(district) {
   if (!dataset) return;
 
   var selectedData = dataset[selectedDataset].data;
-  var htmlStr = '<h3 style="color:#727272">' + district + '</h3>';
+  var htmlStr = '<h3 style="color:#727272">' + $.i18n._(district) + '</h3>';
   htmlStr += '<p id="infoNotes">' + selectedData.metadata.notes+ '</p>';
   var stats = selectedData.body.stats;
   var elemIdsToDraw = [];
   for (var cat in stats) {
     var r = stats[cat];
-    var catText = cat;
-    if (catText == '總' && selectedData.metadata.hasTime && selectedMonth != 0) {
-      catText = selectedMonth + '月';
+    var catText = $.i18n._(cat);
+    if (catText == $.i18n._('總') && selectedData.metadata.hasTime && selectedMonth != 0) {
+      catText = $.i18n._(selectedMonth + '月');
     }
     htmlStr += '<div class="card"><div class="card-content"><span class="card-title black-text">'+catText+'</span>';
 
@@ -340,7 +367,7 @@ function populateInfo(district) {
         v = v[selectedMonth];
         //v = v[0];
       }
-      htmlStr += '<div>' + prop + ': ' + v + '</div>';
+      htmlStr += '<div>' + $.i18n._(prop) + ': ' + v + '</div>';
     }
 
     htmlStr += '</div></div></div>';
@@ -480,6 +507,8 @@ function initialize() {
         district = belong + district;
       }
 
+      district = $.i18n._(district);
+
       if (filterProperty) {
         var propInd = dataset[filterProperty.datasetName].data.body.properties[filterProperty.title].indexOf(filterProperty.prop);
         var val = dataset[filterProperty.datasetName].data.body.stats[filterProperty.title][district][propInd];
@@ -508,10 +537,10 @@ function initialize() {
         if (!hasVillage) return;
 
 	      selectedResolution = 'village';
-	      $(this).text('里');
+	      $(this)._t('里');
       } else {
 	      selectedResolution = 'district';
-	      $(this).text('區');
+	      $(this)._t('區');
       }
 	    setVisibleData(selectedResolution);
       $('#filterDropList li').removeClass('active');
