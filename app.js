@@ -300,7 +300,7 @@ function drawAreaChart(district, elemIds) {
     var chartData = [['Month']];
     var props = selectedData.body.properties[e.category];
     for (var j = 0; j < props.length; ++j) {
-      chartData[0].push(props[j]);
+      chartData[0].push($.i18n._(props[j]));
       for (var k = 1; k <= maxMonth; ++k) {
         var v = r[district][j][k];
         if (j == 0) {
@@ -331,7 +331,7 @@ function populateInfo(district) {
 
   var selectedData = dataset[selectedDataset].data;
   var htmlStr = '<h3 style="color:#727272">' + $.i18n._(district) + '</h3>';
-  htmlStr += '<p id="infoNotes">' + selectedData.metadata.notes+ '</p>';
+  //htmlStr += '<p id="infoNotes">' + selectedData.metadata.notes+ '</p>';
   var stats = selectedData.body.stats;
   var elemIdsToDraw = [];
   for (var cat in stats) {
@@ -367,7 +367,7 @@ function populateInfo(district) {
         v = v[selectedMonth];
         //v = v[0];
       }
-      htmlStr += '<div>' + $.i18n._(prop) + ': ' + v + '</div>';
+      htmlStr += '<div style="margin:5px 0">' + $.i18n._(prop) + ': ' + v + '</div>';
     }
 
     htmlStr += '</div></div></div>';
@@ -507,7 +507,7 @@ function initialize() {
         district = belong + district;
       }
 
-      district = $.i18n._(district);
+      var i18nDistrict = $.i18n._(district);
 
       if (filterProperty) {
         var propInd = dataset[filterProperty.datasetName].data.body.properties[filterProperty.title].indexOf(filterProperty.prop);
@@ -517,12 +517,12 @@ function initialize() {
           val = val[selectedMonth];
         }
         if (ratioFilter) {
-          district += ': '+(100*val/population[district]).toFixed(2)+'%';
+          i18nDistrict += ': '+(100*val/population[district]).toFixed(2)+'%';
         } else {
-          district += ': '+val;
+          i18nDistrict += ': '+val;
         }
       }
-      $('.pageTitle').text(district);
+      $('.pageTitle').text(i18nDistrict);
 	  });
 
 	  map.data.addListener('mouseout', function(event) {
