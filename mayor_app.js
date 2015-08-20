@@ -63,7 +63,7 @@ $('#monthRange').change(function(e) {
 });
 
 function loadData() {
-  ajax('GET', 'dataset.json', function(xmlhttp) {
+  ajax('GET', 'datasetMayor.json', function(xmlhttp) {
     var data = JSON.parse(xmlhttp.responseText);
     if (data) {
       dataset = data;
@@ -81,7 +81,7 @@ function loadData() {
 }
 
 var filterProperty = null;
-var ratioFilter = true;
+var ratioFilter = false;
 function populateFilterMenu() {
   var htmlStr = '';
   for (var datasetName in dataset) {
@@ -367,6 +367,9 @@ function populateInfo(district) {
         v = v[selectedMonth];
         //v = v[0];
       }
+      if (v % 1 !== 0) {
+        v = (100*v).toFixed(2) + '%';
+      }
       htmlStr += '<div style="margin:5px 0">' + $.i18n._(prop) + ': ' + v + '</div>';
     }
 
@@ -519,7 +522,11 @@ function initialize() {
         if (ratioFilter) {
           i18nDistrict += ': '+(100*val/population[district]).toFixed(2)+'%';
         } else {
-          i18nDistrict += ': '+val;
+          if (val % 1 === 0) {
+            i18nDistrict += ': '+val;
+          } else {
+            i18nDistrict += ': '+(100*val).toFixed(2) + '%';
+          }
         }
       }
       $('.pageTitle').text(i18nDistrict);

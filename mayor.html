@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Taipei</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="app.css"></link>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1.1', { packages: ['corechart'] });
+    </script>
+
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/materialize.min.js"></script>
+    <script src="js/jquery.i18n.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <script src="togeojson.js"></script>
+    <script src="mayor_app.js"></script>
+    <script src="locales.js"></script>
+    <script type="text/javascript">
+      var loc = $.cookie('locale');
+      if (loc && loc == 'en') {
+        $.i18n.load(i18nLocales.en);
+      } else {
+        $.i18n.load(i18nLocales.zh);
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <div class="navbar-fixed">
+        <nav>
+          <div class="nav-wrapper">
+            <a href data-activates="slide-out" class="button-collapse menu"><i class="material-icons">menu</i></a>
+            <ul id="slide-out" class="side-nav fixed">
+              <div>
+                <li class="indigo z-depth-1">
+                  <a style="padding:0;">
+                    <span class="pageTitle white-text"></span>
+                  </a>
+                </li>
+              </div>
+            </ul>
+            <ul class="nav-icons">
+              <li style="display:none;"><a><i class="material-icons">search</i></a></li>
+              <li><a id="resolutionToggle" style="display:none;">區</a></li>
+              <li>
+                <a class="dropdown-button" data-activates="filterDrop" data-constrainwidth="false" data-beloworigin="true"><i class="material-icons">filter_list</i></a>
+                <ul id="filterDrop" class="dropdown-content" style="color:black;">
+                  <form>
+                    <input type="checkbox" id="useRatioFilter"  />
+                    <label for="useRatioFilter" style="margin-left:15px" id="useRatioFilterLabel">比例</label>
+                  </form>
+                  <div id="filterDropList">
+                  </div>
+                </ul>
+              </li>
+
+              <div id="monthRangeContainer">
+                <input type="range" id="monthRange" min="0" max="7" value="0" />
+                <span id="selectedMonthText">總</span>
+              </div>
+
+              <li><a id="resetState"><i class="material-icons">refresh</i></a></li>
+              <li><a id="localeToggle" loc="en">English</a></li>
+              <div id="preloader" class="preloader-wrapper active">
+                <div class="spinner-layer spinner-red-only" style="border-color: white">
+                  <div class="circle-clipper left">
+                    <div class="circle"></div>
+                  </div><div class="gap-patch">
+                    <div class="circle"></div>
+                  </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                  </div>
+                </div>
+              </div>
+
+
+            </ul>
+            <ul id="info-right" class="side-nav grey lighten-3 right-aligned">
+              <div id="infoBody"></div>
+              <a id="info-close"><i class="material-icons">close</i></a>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div id="map-canvas"></div>
+    </main>
+  </body>
+</html>

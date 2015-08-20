@@ -7,7 +7,7 @@ var i18nLocales = {
 
     '區': 'District',
     '里': 'Village',
-    '比例': 'Ratio',
+    '除以人口總數': 'Divided by population',
     '總': 'Total',
 
     '1月': 'Jan.',
